@@ -64,3 +64,39 @@ SELECT orders.standard_qty, orders.poster_qty, orders.gloss_qty,accounts.primary
 FROM orders
 JOIN accounts ON orders.id=accounts.id;
 
+/* Provide a table for all web_events associated with account name of Walmart. There should be three columns. Be sure to include the primary_poc, time of the event, and the channel for each even*/
+SELECT a.name, we.occurred_at, we.channel, a.primary_poc
+FROM web_events we
+JOIN accounts a ON a.id=we.account_id
+WHERE a.name='Walmart';
+
+/*Genrating a table that contains region for each sales_rep along with associated accounts*/
+SELECT r.name as region, 
+  sr.name AS rep_name, 
+  a.name AS account_name
+FROM sales_reps sr
+JOIN region r ON r.id=sr.region_id
+JOIN accounts a ON sr.id=a.sales_rep_id
+  ORDER BY a.name;
+
+/* Provide a table that provides the region for each sales_rep along with their associated accounts. This time only for the Midwest region*/
+SELECT r.name as region_name, sr.name AS sales_rep_name, a.name AS account_name
+FROM accounts a
+JOIN sales_reps sr 
+ON a.sales_rep_id=sr.id
+JOIN region r 
+ON sr.region_id=r.id 
+WHERE r.name='Midwest'
+ORDER BY a.name ASC;
+
+/* Provide the name for each region for every order, as well as the account name and the unit price they paid (total_amt_usd/total) for the order.
+However, you should only provide the results if the standard order quantity exceeds 100*/
+SELECT r.name AS region_name, a.name AS account_name, (total_amt_usd/(total+0.01)) AS unit_price, o.standard_qty
+FROM orders o                                                           
+JOIN accounts a 
+ON o.account_id=a.id
+JOIN sales_reps sr 
+ON a.sales_rep_id =sr.id
+JOIN region r 
+ON sr.region_id=r.id
+WHERE o.standard_qty>100;  
