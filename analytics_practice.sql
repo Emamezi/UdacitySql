@@ -58,3 +58,9 @@ SELECT name
 FROM accounts
 WHERE (name LIKE 'C%' OR name LIKE 'W%') 
 AND ((primary_poc LIKE '%ana%' OR primary_poc LIKE '%Ana%') AND primary_poc NOT LIKE '%eana%');
+
+/*Selecting designated columns from two tables*/
+SELECT orders.standard_qty, orders.poster_qty, orders.gloss_qty,accounts.primary_poc, accounts.website
+FROM orders
+JOIN accounts ON orders.id=accounts.id;
+
