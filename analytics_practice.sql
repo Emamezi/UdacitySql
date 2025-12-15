@@ -107,3 +107,57 @@ FROM accounts a
 JOIN orders o ON o.account_id=a.id
 ORDER BY o.occurred_at ASC
 LIMIT 1
+
+/*Total sales for each account*/
+SELECT a.name,SUM(o.total_amt_usd) total_sales
+FROM accounts a
+JOIN orders o ON o.account_id=a.id
+GROUP BY a.name;
+
+SELECT w.occurred_at latest, w.channel, a.name
+FROM web_events w
+JOIN accounts a
+ON w.account_id=a.id
+ORDER BY latest DESC
+LIMIT 1;
+
+/*Whcih marketings channel brings in the most revenue and how often is it patronized*/
+SELECT w.channel, COUNT(*) as count, SUM(o.total_amt_usd) AS revenue
+FROM web_events w
+JOIN accounts a
+ON w.account_id=a.id
+JOIN orders o
+ON o.account_id=a.id
+GROUP BY w.channel;
+
+/* primary contact associated with the earliest web_event*/
+select a.primary_poc
+FROM accounts a
+JOIN web_events w
+ON w.account_id=a.id
+ORDER BY w.occurred_at ASC
+LIMIT 1;
+
+/*Smallest order placed by each account*/
+SELECT a.name, MIN(o.total_amt_usd) as smallest_order
+FROM accounts a
+JOIN orders o
+ON o.account_id=a.id
+GROUP BY a.name
+ORDER BY smallest_order;
+
+/*Number of sales reps in each region*/
+SELECT r.name, COUNT(*) rep_count
+FROM region r
+JOIN sales_reps s
+ON r.id=s.region_id
+GROUP BY r.name
+ORDER BY rep_count;
+
+/* he number of times a particular channel was used in the web_events table for each sales rep*/
+SELECT w.channel,s.name, count(*) num_events
+FROM web_events w
+JOIN accounts a ON w.account_id=a.id
+JOIN sales_reps s ON a.sales_rep_id=s.id
+GROUP BY w.channel, s.name
+ORDER BY num_events DESC;
