@@ -100,3 +100,10 @@ ON a.sales_rep_id =sr.id
 JOIN region r 
 ON sr.region_id=r.id
 WHERE o.standard_qty>100;  
+
+/* Which account (by name) placed the earliest order?*/
+SELECT a.name,o.occurred_at
+FROM accounts a
+JOIN orders o ON o.account_id=a.id
+ORDER BY o.occurred_at ASC
+LIMIT 1
