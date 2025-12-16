@@ -161,3 +161,58 @@ JOIN accounts a ON w.account_id=a.id
 JOIN sales_reps s ON a.sales_rep_id=s.id
 GROUP BY w.channel, s.name
 ORDER BY num_events DESC;
+
+/*Have any sales reps worked on more than one account*/
+SELECT  s.id sales_id, s.name sales_name, count(*) num_acc
+FROM accounts a
+JOIN sales_reps s ON a.sales_rep_id=s.id
+GROUP BY sales_id,sales_name
+ORDER BY num_acc ;
+
+/*How many of the sales reps have more than 5 accounts that they manage*/
+SELECT a.sales_rep_id sales, count(*) num_acc
+FROM accounts a
+JOIN sales_reps s ON a.sales_rep_id=s.id
+GROUP BY sales 
+HAVING count(*)>5
+ORDER BY num_acc ASC;
+
+/*Accounts that have more orders than 20*/
+SELECT a.name, o.account_id, count(*)
+FROM accounts a
+JOIN orders o ON o.account_id=a.id
+GROUP BY a.name, o.account_id
+HAVING count(*)>20
+ORDER BY a.name ASC;
+
+/*Account witht the most orders*/
+SELECT a.name, o.account_id, count(*) order_count
+FROM accounts a
+JOIN orders o ON o.account_id=a.id
+GROUP BY a.name, o.account_id
+ORDER BY order_count DESC
+LIMIT 1;
+
+/*How many account spend more than 30000 on orders*/
+SELECT a.name, o.account_id, SUM(total_amt_usd) sum_amt
+FROM accounts a
+JOIN orders o ON o.account_id=a.id
+GROUP BY a.name, o.account_id
+HAVING SUM(total_amt_usd)>30000
+ORDER BY sum_amt;
+
+/*Which account has spent the most with the company*/
+SELECT a.name, o.account_id, SUM(total_amt_usd) sum_amt
+FROM accounts a
+JOIN orders o ON o.account_id=a.id
+GROUP BY a.name, o.account_id
+ORDER BY sum_amt DESC
+LIMIT 1;
+
+/*which accounts used facebook as a channel to contact customers more than 6 times*/
+SELECT a.name as name, w.channel chan, count(*) channel_count
+FROM accounts a
+JOIN web_events w  ON w.account_id=a.id
+GROUP BY a.name, w.channel
+HAVING count(*)>6 AND w.channel='facebook'
+ORDER BY channel_count;
